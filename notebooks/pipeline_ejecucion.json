@@ -1,0 +1,59 @@
+{
+    "name": "ejercicion de final",
+    "properties": {
+        "activities": [
+            {
+                "name": "ErrorTelegram",
+                "type": "WebActivity",
+                "dependsOn": [
+                    {
+                        "activity": "Ejecutar pipeline final",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "method": "POST",
+                    "url": "https://api.telegram.org/bot${TOKEN_TELEGRAM}/sendMessage",
+                    "connectVia": {
+                        "referenceName": "AutoResolveIntegrationRuntime",
+                        "type": "IntegrationRuntimeReference"
+                    },
+                    "body": {
+                        "chat_id": "${CHAT_ID_TELEGRAM}",
+                        "text": "⚠️ <b><u>Pipeline Iniciada fallada</u></b>\n\nLa canalización <i>@{pipeline().Pipeline}</i> ha ocurrido debido a un fallo en el notebook siguiente al mencionado en mi mensaje anterior",
+                        "parse_mode": "HTML"
+                    }
+                }
+            },
+            {
+                "name": "Ejecutar pipeline final",
+                "type": "ExecutePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "pipeline": {
+                        "referenceName": "final",
+                        "type": "PipelineReference"
+                    },
+                    "waitOnCompletion": true
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2026-06-11T09:34:10Z"
+    },
+    "type": "Microsoft.Synapse/workspaces/pipelines"
+}

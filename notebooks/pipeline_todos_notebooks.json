@@ -1,0 +1,297 @@
+{
+    "name": "final",
+    "properties": {
+        "activities": [
+            {
+                "name": "01_ingesta_bronze",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "00_obtencion_datos_raw",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "01_ingesta_bronze",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "01b_calidad_bronze",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "01_ingesta_bronze",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "01b_calidad_bronze",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "02_exploracion_eda",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "01b_calidad_bronze",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "02_exploracion_eda",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "03_procesamiento_silver",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "02_exploracion_eda",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "03_procesamiento_silver",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "03b_recuperacion_cuarentena",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "03_procesamiento_silver",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "03b_recuperacion_cuarentena",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "04_star_schema_powerbi",
+                "type": "SynapseNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "03b_recuperacion_cuarentena",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "04_star_schema_powerbi_ai",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 1
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            },
+            {
+                "name": "00_obtencion_datos_raw",
+                "type": "SynapseNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "00_obtencion_datos_raw",
+                        "type": "NotebookReference"
+                    },
+                    "snapshot": true,
+                    "sparkPool": {
+                        "referenceName": "medicalpool",
+                        "type": "BigDataPoolReference"
+                    },
+                    "executorSize": "Small",
+                    "conf": {
+                        "spark.dynamicAllocation.enabled": true,
+                        "spark.dynamicAllocation.minExecutors": 1,
+                        "spark.dynamicAllocation.maxExecutors": 2
+                    },
+                    "driverSize": "Small",
+                    "numExecutors": 1,
+                    "authentication": {
+                        "type": "MSI"
+                    }
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2026-06-11T09:45:43Z"
+    },
+    "type": "Microsoft.Synapse/workspaces/pipelines"
+}
